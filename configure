@@ -1,0 +1,29 @@
+#!/bin/sh
+
+set -euo pipefail 
+
+echo "Generating makefile..."
+cat > Makefile <<EOF
+.PHONY: all clean install
+
+CC=clang
+CFLAGS=-Wall -Werror -fpic
+SOURCES:=\$(wildcard ./*.c)
+OBJ:=\$(patsubst ./%.c,./%.o,\$(SOURCES))
+SO=libsimplelib.so
+
+all: \$(SO)
+
+clean:
+	rm \$(SO)
+
+\$(SO): \$(OBJ)
+	\$(CC) -shared -o \$@ \$^
+
+\$(OBJ): ./%.o : ./%.c
+	\$(CC) -c \$(CFLAGS) \$^
+
+install: all
+	
+EOF
+echo "All set!  Run make to compile the shared object file."
