@@ -14,7 +14,7 @@ void obtain_greeting(char *buf, size_t len) {
 		return;
 	}
 	// Otherwise, just copy what will fit.
-	char substring_buf[len - 1];
+	char substring_buf[len];
 	memcpy(substring_buf, GREETING, len - 1);
 	substring_buf[len] = '\0';
 	strcpy(buf, substring_buf);
