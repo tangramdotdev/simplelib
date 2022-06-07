@@ -1,8 +1,29 @@
-#!/bin/sh
+#!/bin/bash
 
 set -euo pipefail 
 
-echo "Generating makefile..."
+_setArgs() {
+	while [ "${1:-}" != "" ]; do
+		case "$1" in
+			"-n" | "--name")
+			shift
+			name=$1
+			;;
+			"-p" | "--prefix")
+			shift
+			prefix=$1
+			;;
+		esac
+		shift
+	done
+}
+
+_setArgs "$@"
+
+NAME=${name:-simple-1}
+PREFIX=${prefix:-/usr/local}
+
+writeMakefile() {
 cat > Makefile <<EOF
 .PHONY: all clean install
 
@@ -10,12 +31,14 @@ CC=clang
 CFLAGS=-Wall -Werror -fpic
 SOURCES:=\$(wildcard ./*.c)
 OBJ:=\$(patsubst ./%.c,./%.o,\$(SOURCES))
-SO=libsimplelib.so
+SO=lib"$NAME".so
+PREFIX="$PREFIX"
+PROJECT="$NAME"
 
 all: \$(SO)
 
 clean:
-	rm \$(SO)
+	rm -f \$(OBJ) \$(SO)
 
 \$(SO): \$(OBJ)
 	\$(CC) -shared -o \$@ \$^
@@ -24,6 +47,31 @@ clean:
 	\$(CC) -c \$(CFLAGS) \$^
 
 install: all
-	
+	mkdir -p \$(PREFIX)/include/\$(PROJECT) && \
+	cp simple.h \$(PREFIX)/include/\$(PROJECT) && \
+	mkdir -p \$(PREFIX)/lib/pkgconfig && \
+	cp \$(SO) \$(PREFIX)/lib && \
+	cp "$NAME".pc  \$(PREFIX)/lib/pkgconfig
 EOF
+}
+
+writePc() {
+cat > "$NAME".pc <<EOF
+prefix="$PREFIX"
+exec_prefix="$PREFIX"
+libdir="$PREFIX"/lib
+includedir="$PREFIX"/include
+
+Name: simple
+Description: A small shared library for obtaining a Hello World greeting.
+Version: 1.0.0
+Libs: -L\${libdir} -l"$NAME"
+Cflags: -I\${includedir}/"$NAME"
+EOF
+}
+
+echo "Generating pkg-config file..."
+writePc
+echo "Generating makefile..."
+writeMakefile
 echo "All set!  Run make to compile the shared object file."
