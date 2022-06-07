@@ -41,7 +41,7 @@ clean:
 	rm -f \$(OBJ) \$(SO)
 
 \$(SO): \$(OBJ)
-	\$(CC) -shared -o \$@ \$^
+	\$(CC) \$(LDFLAGS) -shared -o \$@ \$^
 
 \$(OBJ): ./%.o : ./%.c
 	\$(CC) -c \$(CFLAGS) \$^
