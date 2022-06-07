@@ -27,7 +27,7 @@ writeMakefile() {
 cat > Makefile <<EOF
 .PHONY: all clean install
 
-CC=clang
+CC=${CC:-clang}
 CFLAGS=-Wall -Werror -fpic
 SOURCES:=\$(wildcard ./*.c)
 OBJ:=\$(patsubst ./%.c,./%.o,\$(SOURCES))
