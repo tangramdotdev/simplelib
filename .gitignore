@@ -3,3 +3,11 @@ Makefile
 **/*.o
 **/*.so
 **/*.pc
+stamp*
+**/*.cache
+**/*~
+**/*.tar.*
+**/*.lo
+**/*.la
+**/*.deps
+**/*.libs
