@@ -11,3 +11,4 @@ stamp*
 **/*.la
 **/*.deps
 **/*.libs
+**/*.log
