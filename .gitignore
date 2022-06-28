@@ -30,6 +30,7 @@ autom4te.cache
 /compile
 /config.cache
 /config.guess
+/config.h
 /config.h.in
 /config.log
 /config.status
@@ -38,6 +39,7 @@ autom4te.cache
 /configure.scan
 /depcomp
 /install-sh
+/libtool
 /missing
 /stamp-h1
 
